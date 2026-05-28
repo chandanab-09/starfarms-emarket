@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAR FARMS E-MARKET | Full Admin Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --sidebar-bg: #111827;
+            --bg-main: #f3f4f6;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background: var(--bg-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            color: var(--primary);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: #9ca3af;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .logout { margin-top: auto; color: #ef4444; padding: 15px; cursor: pointer; font-weight: 600; }
+
+        /* --- CONTENT AREA --- */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .content-section { display: none; animation: fadeIn 0.3s ease; }
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            max-width: 1100px;
+        }
+
+        h1 { margin-top: 0; font-size: 1.6rem; text-align: center; }
+        h2 { font-size: 1.1rem; border-bottom: 2px solid var(--bg-main); padding-bottom: 8px; margin: 25px 0 10px 0; }
+
+        .stat-line { margin: 10px 0; font-weight: 500; }
+        
+        /* --- TABLE STYLES --- */
+        .table-wrap { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { background: #f8fafc; padding: 12px; border: 1px solid var(--border); text-align: left; color: var(--text-muted); }
+        td { padding: 10px; border: 1px solid var(--border); vertical-align: middle; }
+        
+        .img-placeholder { width: 40px; height: 40px; background: #eee; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 0.6rem; }
+        .status-placed { color: #2563eb; font-weight: 700; }
+
+        /* --- FORM STYLES --- */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; font-family: inherit; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo"><span>⭐</span> Star Farms</div>
+        <div class="nav-item active" onclick="showSection('dashboard', this)">Dashboard</div>
+        <div class="nav-item" onclick="showSection('users', this)">Users</div>
+        <div class="nav-item" onclick="showSection('orders', this)">Orders</div>
+        <div class="nav-item" onclick="showSection('contacts', this)">Contacts</div>
+        <div class="nav-item" onclick="showSection('reports', this)">Reports</div>
+        <div class="nav-item" onclick="showSection('add-products', this)">Add Products</div>
+        <div class="logout" onclick="adminLogout()">Logout</div>
+    </aside>
+
+    <main class="main-content">
+        
+        <section id="dashboard" class="content-section active">
+    <div class="card">
+        <h1>Overview</h1>
+
+        <div id="total-users" class="stat-line">Total Users: Loading...</div>
+        <div id="total-orders" class="stat-line">Total Orders: Loading...</div>
+        <div id="total-contacts" class="stat-line">Total Contacts: Loading...</div>
+
+        <h2>All Products</h2>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="product-table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+        <section id="users" class="content-section">
+            <div class="card">
+                <h1>Registered Users</h1>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>User ID</th><th>Username</th><th>Email Address</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="user-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="orders" class="content-section">
+            <div class="card">
+                <h1 style="text-align: left;">All Orders</h1>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>User</th>
+                                <th>Product</th>
+                                <th>Image</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacts" class="content-section">
+    <div class="card">
+        <h1>Customer Contacts</h1>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="contact-table-body">
+                    <tr><td colspan="5" style="text-align:center;">Loading messages...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+         
+        <section id="reports" class="content-section">
+    <div class="card">
+        <h1>Sales Reports & Billing</h1>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button id="download-sales" class="btn-submit" style="width: auto; padding: 10px 30px; background: #10b981;">
+                📥 Download Total Sales Report (Excel)
+            </button>
+        </div>
+
+        <div class="table-wrap">
+            <table id="reports-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="reports-table-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+
+
+        <section id="add-products" class="content-section">
+            <div class="card">
+                <h1>Add New Product</h1>
+                <form id="productForm">
+                    <div class="form-group"><label>Product Name</label><input type="text" id="pName" required></div>
+                    <div class="form-group"><label>Description</label><textarea id="pDesc" rows="3"></textarea></div>
+                    <div class="form-group"><label>Price (₹)</label><input type="number" id="pPrice" required></div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="pCategory">
+                            <option>Dog</option><option>Cat</option><option>Birds</option><option>Fish</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Image Filename</label><input type="text" id="pImage" placeholder="dog1.jpg"></div>
+                    <button type="submit" class="btn-submit">Add Product</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+   <script>
+// ================= NAVIGATION =================
+function showSection(id, element) {
+
+    document.querySelectorAll('.content-section').forEach(sec => {
+        sec.style.display = 'none';
+        sec.classList.remove('active');
+    });
+
+    document.querySelectorAll('.nav-item').forEach(nav => {
+        nav.classList.remove('active');
+    });
+
+    const target = document.getElementById(id);
+    if (target) {
+        target.style.display = 'block';
+        target.classList.add('active');
+    }
+
+    if (element) element.classList.add('active');
+
+    if (id === 'dashboard') loadDashboard();
+    if (id === 'users') loadUsers();
+    if (id === 'orders') loadOrders();
+    if (id === 'reports') loadReports();
+    if (id === 'contacts') loadContacts();
+}
+
+// ================= DASHBOARD =================
+async function loadDashboard() {
+    try {
+        const res = await fetch('/api/admin/overview-stats');
+        const data = await res.json();
+
+        document.getElementById('total-users').innerText = `Total Users: ${data.totalUsers || 0}`;
+        document.getElementById('total-orders').innerText = `Total Orders: ${data.totalOrders || 0}`;
+        document.getElementById('total-contacts').innerText = `Total Contacts: ${data.totalContacts || 0}`;
+
+        loadProducts(); // 🔥 load products table
+
+    } catch (err) {
+        console.error("Dashboard error:", err);
+    }
+}
+
+// ================= USERS =================
+async function loadUsers() {
+    try {
+        const res = await fetch('/api/admin/get-all-users');
+        const users = await res.json();
+
+        const tbody = document.getElementById('user-table-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = users.map(user => `
+            <tr>
+                <td>${user.id}</td>
+                <td>${user.firstName} ${user.lastName}</td>
+                <td>${user.email}</td>
+                <td style="color:green;">Active</td>
+            </tr>
+        `).join('');
+
+    } catch (err) {
+        console.error("Users error:", err);
+    }
+}
+
+// ================= ORDERS =================
+async function loadOrders() {
+    try {
+        const res = await fetch('/api/admin/get-all-orders');
+        const orders = await res.json();
+
+        const tbody = document.getElementById('order-table-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = orders.map(order => `
+            <tr>
+                <td>#${order.id}</td>
+                <td>${order.customer_name}</td>
+                <td>${order.main_product || 'Pet Product'}</td>
+                <td>📦</td>
+                <td>₹${order.total}</td>
+                <td style="color:blue;">Placed</td>
+            </tr>
+        `).join('');
+
+    } catch (err) {
+        console.error("Orders error:", err);
+    }
+}
+
+// ================= NEW: REPORTS LOGIC =================
+async function loadReports() {
+    try {
+        console.log("Fetching reports...");
+        const res = await fetch("/api/orders?key=MYSECRET123");
+        
+        if (!res.ok) throw new Error("Server error: " + res.status);
+        
+        const orders = await res.json();
+        console.log("Orders received:", orders); // Check your F12 console for this!
+
+        const tbody = document.getElementById('reports-table-body');
+        if (!tbody) return;
+
+        if (orders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No orders found.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = orders.map(order => `
+            <tr>
+                <td>#${order.id}</td>
+                <td>${order.customer_name || 'N/A'}</td>
+                <td>${order.email || 'N/A'}</td>
+                <td>₹${order.total}</td>
+                <td>${new Date(order.created_at).toLocaleDateString()}</td>
+                <td>
+                    <button onclick="downloadBill(${order.id})" style="background:#6366f1; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">📄 Bill</button>
+                </td>
+            </tr>
+        `).join('');
+    } catch (err) { 
+        console.error("Reports error:", err);
+        document.getElementById('reports-table-body').innerHTML = `<tr><td colspan="6" style="color:red; text-align:center;">Failed to load data: ${err.message}</td></tr>`;
+    }
+}
+
+// Download Total Sales Report
+async function downloadSalesReport() {
+    const res = await fetch("/api/sales-report?key=MYSECRET123");
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "StarFarms_Full_Sales_Report.xlsx";
+    a.click();
+}
+// Individual Bill Download
+async function downloadBill(orderId) {
+    const res = await fetch(`/api/download-bill/${orderId}?key=MYSECRET123`);
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `bill-${orderId}.xlsx`;
+    a.click();
+}
+
+// ================= PRODUCTS TABLE =================
+async function loadProducts() {
+    try {
+        const res = await fetch('/api/admin/get-all-products');
+        const products = await res.json();
+
+        const tbody = document.getElementById("product-table-body");
+
+        tbody.innerHTML = products.map(p => `
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.name}</td>
+                <td>₹${p.price}</td>
+                <td>${p.category}</td>
+                <td>
+                    <button onclick="deleteProduct(${p.id})"
+                        style="background:red;color:white;border:none;padding:5px 10px;border-radius:5px;">
+                        ❌
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+
+    } catch (err) {
+        console.error("Load products error:", err);
+    }
+}
+
+
+
+
+// ================= DELETE PRODUCT =================
+async function deleteProduct(id) {
+    if (!confirm("Delete this product?")) return;
+
+    try {
+        await fetch(`/api/admin/delete-product/${id}`, {
+            method: 'DELETE'
+        });
+
+        loadProducts(); // refresh table
+
+    } catch (err) {
+        console.error("Delete error:", err);
+    }
+}
+
+// ================= ADD PRODUCT =================
+document.getElementById('productForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const productData = {
+        name: document.getElementById('pName').value,
+        description: document.getElementById('pDesc').value,
+        price: document.getElementById('pPrice').value,
+        category: document.getElementById('pCategory').value,
+        image: document.getElementById('pImage').value
+    };
+
+    try {
+        const res = await fetch('/api/admin/add-product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productData)
+        });
+
+        if (res.ok) {
+            alert("Product Added Successfully ✅");
+            document.getElementById('productForm').reset();
+
+            loadProducts(); // update instantly
+        } else {
+            alert("Error adding product");
+        }
+
+    } catch (err) {
+        console.error("Add product error:", err);
+    }
+});
+
+async function loadContacts() {
+    try {
+        const res = await fetch('/api/admin/get-all-contacts');
+        const contacts = await res.json();
+        const tbody = document.getElementById('contact-table-body');
+
+        if (contacts.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No messages found.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = contacts.map(c => `
+            <tr>
+                <td>${c.id}</td>
+                <td>${c.name}</td>
+                <td>${c.email}</td>
+                <td>${c.message}</td>
+                <td>${new Date(c.created_at).toLocaleDateString()}</td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        console.error("Load contacts error:", err);
+    }
+}
+
+// ================= PAGE LOAD =================
+window.onload = function() {
+    loadDashboard();
+
+// Link the download button to the function
+    const reportBtn = document.getElementById('download-sales');
+    if (reportBtn) {
+        reportBtn.onclick = downloadSalesReport; // <--- ADD THIS
+    }
+};
+
+function adminLogout() {
+    // 1. Ask for confirmation so they don't logout by accident
+    if (confirm("Are you sure you want to logout")) {
+        
+        // 2. Clear the specific admin session (or all if you prefer)
+        localStorage.removeItem("isAdminLoggedIn"); 
+        
+        // If you store the admin details in the same 'currentUser' key as customers:
+        // localStorage.removeItem("currentUser"); 
+
+        // 3. Redirect to your login page
+        window.location.href = "index.html"; 
+    }
+}
+</script>
+</body>
+</html>

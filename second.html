@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Star Farms</title>
+    <style>
+    
+/* ===== BODY & BACKGROUND ===== */
+body {
+    margin: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: #f5f7fa;
+    color: #333;
+}
+
+/* ===== HEADER ===== */
+header {
+    background-color: #3b82f6; /* exact blue from login page */
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1), 0 0 10px #3b82f6, 0 0 20px #3b82f6;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.header-right input {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    width: 220px;
+    outline: none;
+    font-size: 14px;
+}
+
+.cart-btn, .profile-btn {
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    margin-left: 10px;
+    background-color: white;
+    color: #3b82f6;
+    box-shadow: 0 0 8px #3b82f6, 0 0 15px #3b82f6;
+    transition: all 0.3s ease;
+}
+
+.cart-btn:hover, .profile-btn:hover {
+    background-color: #3b82f6;
+    color: white;
+    box-shadow: 0 0 15px #3b82f6, 0 0 25px #3b82f6;
+}
+
+/* ===== CONTAINER & SIDEBAR ===== */
+.container {
+    display: flex;
+    min-height: calc(100vh - 65px);
+}
+
+.sidebar {
+    width: 220px;
+    background-color: #fff;
+    padding-top: 20px;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+}
+
+.sidebar a {
+    cursor: pointer;
+    display: block;
+    padding: 14px 20px;
+    text-decoration: none;
+    color: #3b82f6; /* exact login page blue */
+    font-weight: 500;
+    border-radius: 6px;
+    margin: 10px 10px; 
+    transition: all 0.3s ease;
+    box-shadow: 0 0 6px #3b82f6, 0 0 12px #3b82f6;
+}
+
+.sidebar a:hover {
+    background-color: #e0f2fe;
+    box-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6;
+}
+
+/* ===== CONTENT ===== */
+.content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/* Welcome message */
+.welcome {
+    font-size: 28px;
+    font-weight: 700;
+    color: #3b82f6;
+    margin-bottom: 30px;
+    text-shadow: 0 0 5px #3b82f6, 0 0 10px #3b82f6;
+}
+
+/* ===== PRODUCTS GRID ===== */
+.products {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.12), 0 0 15px #3b82f6;
+}
+
+.product-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    margin: 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #3b82f6; /* exact login page blue */
+}
+
+.card p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 12px;
+    height: 38px;
+}
+
+.card button {
+    padding: 10px 12px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 0 8px #3b82f6, 0 0 15px #3b82f6;
+    transition: all 0.3s ease;
+}
+
+.card button:hover {
+    background: #3b82f6; /* preserve exact blue on hover if you want */
+    box-shadow: 0 0 12px #3b82f6, 0 0 25px #3b82f6;
+}
+
+/* ===== PROFILE POPUP ===== */
+.profile-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 4000;
+}
+
+.profile-box {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2), 0 0 10px #3b82f6, 0 0 20px #3b82f6;
+}
+
+.profile-box h3 {
+    margin-bottom: 20px;
+    color: #3b82f6;
+    text-shadow: 0 0 5px #3b82f6, 0 0 10px #3b82f6;
+}
+
+.profile-box button {
+    margin-top: 15px;
+    padding: 10px 16px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 0 8px #3b82f6, 0 0 15px #3b82f6;
+}
+
+.profile-box button:hover {
+    background-color: #3b82f6; /* exact blue */
+    box-shadow: 0 0 12px #3b82f6, 0 0 25px #3b82f6;
+}
+
+/* ===== DETAILS MODAL ===== */
+.details-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+
+.details-box {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 520px;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2), 0 0 10px #3b82f6, 0 0 20px #3b82f6;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.details-box img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.details-box h2 {
+    color: #3b82f6;
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px #3b82f6, 0 0 10px #3b82f6;
+}
+
+.details-box p {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.details-box button:hover {
+    background-color: #3b82f6;
+}
+
+/* ===== CART POPUP ===== */
+.cart-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+
+.cart-box {
+    width: 650px;
+    max-width: 90%;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2), 0 0 10px #3b82f6, 0 0 20px #3b82f6;
+    max-height: 80vh;
+    overflow-y: auto;
+    color: black;
+}
+
+.cart-header, .cart-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-product {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cart-product img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.cart-total {
+    text-align: right;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.cart-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+.cart-buttons button {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background-color: #3b82f6;
+    color: white;
+    box-shadow: 0 0 8px #3b82f6, 0 0 15px #3b82f6;
+    transition: all 0.3s ease;
+}
+
+.cart-buttons button:hover {
+    background-color: #3b82f6;
+    box-shadow: 0 0 12px #3b82f6, 0 0 25px #3b82f6;
+}
+.animal {
+    position: fixed;
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+}
+
+</style>
+</head>
+
+<body>
+<header>
+    <h1>⭐ STAR FARMS</h1>
+
+    <!-- Add this to the header-right div in the HTML -->
+<div class="header-right">
+    <input type="text" id="searchBox" placeholder="Search products..." onkeyup="searchProducts()">
+    <!-- Cart Button -->
+      <button class="cart-btn" onclick="toggleCart()">
+        🛒 Cart (<span id="cart-count">0</span>)
+    </button>
+    <!-- Profile Button -->
+    <button class="profile-btn" onclick="toggleProfile()">
+        👤 Profile
+    </button>
+</div>
+
+<!-- Add this after the profile popup in the HTML -->
+<!-- Cart Popup -->
+<div class="cart-popup" id="cartPopup">
+    <div class="cart-box">
+        <!-- Content will be populated by JS -->
+    </div>
+</div>
+</header>
+
+
+<div class="container">
+
+    <div class="sidebar">
+        <a onclick="showProducts('fish')">Fish Products</a>
+        <a onclick="showProducts('bird')">Bird Products</a>
+        <a onclick="showProducts('dog')">Dog Products</a>
+        <a onclick="showProducts('cat')">Cat Products</a>
+    </div>
+
+    <div class="content">
+        <div class="welcome">Welcome User!</div>
+        <div class="products" id="productArea"></div>
+        <div id="floatingAnimals"></div>
+    </div>
+
+</div>
+
+<script>
+
+let allProducts = [];
+let loggedUser = JSON.parse(localStorage.getItem("currentUser"));
+
+if (!loggedUser) {
+    alert("Please login first");
+    window.location.href = "login.html";
+}
+
+let userKey = "cart_" + loggedUser.email;  
+let cart = JSON.parse(localStorage.getItem(userKey)) || [];
+
+
+const productData = {
+
+fish: [
+  { id:1,name:"STAR FARMS Red Fin Betta Pallete 50 kg (2×25 kg)",desc:"Food for fish of all life stages.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-Red-Fin-Betta-Pallete-50-kg-2x25-kg-Dry-Adult-New-Born-Senior-Young-Fish-Food.jpg", price: "300", ingredients: "Fish meal, wheat, corn, vitamins", benefits: "Supports growth and health"},
+  { id:2,name:"STAR FARMS Royal Red Fish 0.75 kg",desc:"Premium Betta fish diet.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-Royal-Red-Fish-0.75-kg-Dry-Adult-New-Born-Senior-Young-Fish-Food-01.jpg", price: "120", ingredients: "Shrimp, fish oil, spirulina", benefits: "Enhances color and vitality"},
+  {id:3,name:"STAR FARMS Royal Red Natural Feed For All Tropical Fishes 100 Gms 0.1 kg",desc:"Tropical fish nutrition.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-Royal-Red-Natural-Feed-For-All-Tropical-Fishes-100-Gms-0.1-kg-Dry-Adult-New-Born-Young-Senior-Fish-Food.jpg", price: "180/-", ingredients: "Natural algae, fish protein", benefits: "Natural nutrition for tropical fish"},
+  { id:4,name:"STAR FARMS Starry Head 0.1 kg",desc:"Balanced diet for fish.",img:"https://www.petzlifeworld.in/cdn/shop/files/71hNxPMyM1L._SL1500.jpg?v=1729337324&width=493", price: "140", ingredients: "Dried fish, vegetables, minerals", benefits: "Balanced nutrition for all fish"}
+],
+
+bird: [
+  {id:5,name:"STAR FARMS 1 pack (3 piece’s) Pet Health Supplements (260 ml)",desc:"Bird health supplement pack.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-1-pack-3-pieces-Pet-Health-Supplements-260-ml.jpg", price: "250", ingredients: "Vitamins, minerals, herbs", benefits: "Boosts immunity and health"},
+  {id:6,name:"STAR FARMS 1 pack (3 piece’s) Pet Health Supplements (400 ml)",desc:"Bird booster & health support.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-1-pack-3-pieces-Pet-Health-Supplements-400-ml-5.jpg", price: "293", ingredients: "Amino acids, vitamins", benefits: "Supports overall bird health"},
+  { id:7,name:"STAR FARMS 1 Pack (3 Pieces) Pet Health Supplements (290 g)",desc:"Combo bird care supplement pack.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-1-Pack-3-Pieces-Pet-Health-Supplements-290-g.jpg", price: "280", ingredients: "Calcium, vitamins, probiotics", benefits: "Comprehensive care for birds"},
+  {id:8,name:"STAR FARMS 1 pack (5 piece’s) Pet Health Supplements (0.6 kg)",desc:"Bird health support formula.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-1-pack-5-pieces-Pet-Health-Supplements-0.6-kg.jpg", price: "399", ingredients: "Herbs, vitamins, minerals", benefits: "Enhances bird vitality"},
+  {id:9,name:"STAR FARMS 1 pack (5 piece’s) Pet Health Supplements (420 mg)",desc:"Enhances feather color naturally.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-1-pack-5-pieces-Pet-Health-Supplements-420-mg-1.jpg", price: "944", ingredients: "Natural pigments, vitamins", benefits: "Improves feather color"},
+  {id:10,name:"STAR FARMS Egg Food 250g Pet Health Supplements (250 g)",desc:"Enhances feather color naturally.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-Egg-Food-250g-Pet-Health-Supplements-250-g.jpg", price: "150", ingredients: "Egg-based nutrients, vitamins", benefits: "Supports breeding and health"},
+  {id:11,name:"Star Farms M012 Supplement",desc:"Popular bird supplement.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-M012-Pet-Health-Supplements-500-mg.jpg", price: "200", ingredients: "Minerals, vitamins", benefits: "General health supplement"},
+  {id:12,name:"STAR FARMS M012 Pet Health Supplements (700 mg).",desc:"Popular bird supplement.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-M012-Pet-Health-Supplements-700-mg.jpg", price: "230", ingredients: "Minerals, vitamins", benefits: "General health supplement"},
+  {id:13,name:"STAR FARMS Multi Color Multi Vitamin compound to intensify color for birds 50 ml Pet Health Supplements (50 ml)",desc:"Intensifies color for birds.",img:"https://starsfarms.com/wp-content/uploads/2022/09/STAR-FARMS-Multi-Color-Multi-Vitamin-compound-to-intensify-color-for-birds-50-ml-Pet-Health-Supplements-50-ml.jpg", price: "130", ingredients: "Vitamins, color enhancers", benefits: "Enhances bird color"}
+],
+
+dog: [
+{id:14,name:"Bros Pet Dog Food(80gms, Chicken and Egg)",desc:"Balanced nutrition.",img:"https://tunai.in/cdn/shop/files/61wY3w_JbuL._SL1500.jpg?v=1763459574&width=713", price: "1096", ingredients: "Chicken, rice, vegetables", benefits: "Complete balanced diet"},
+{id:15,name:"Bros Pet Dog Food(80gms, Chicken and Liver)",desc:"Improves immunity.",img:"https://tunai.in/cdn/shop/files/71IjIC-L1rL._SL1500.jpg?v=1763459573&width=713", price: "1096", ingredients: "Vitamins A, D, E", benefits: "Boosts immune system"},
+{id:16,name:"Bros Pet Dog Food(80gms, Chicken & Veg)",desc:"Special for puppies.",img:"https://tunai.in/cdn/shop/files/61x-41G-DmL._SL1500.jpg?v=1763459573&width=713", price: "1096", ingredients: "Chicken, fish, dairy", benefits: "Supports puppy growth"},
+{id:17,name:"Bros Pet Dog Food(80gms, Sardines and White Fish)",desc:"Supports bones.",img:"https://tunai.in/cdn/shop/files/71CQz533l5L._SL1500.jpg?v=1763459569&width=493", price: "1096", ingredients: "Calcium, vitamin D", benefits: "Strengthens bones"},
+{id:18,name:"Bros Pet Dog Food(80gms, Tuna Chunks)",desc:"For sensitive dogs.",img:"https://tunai.in/cdn/shop/files/71jHTSHKxKL._SL1500.jpg?v=1763459569&width=493", price: "1096", ingredients: "Meat, potatoes, peas", benefits: "Easy on digestion"}
+],
+
+cat: [
+{id:19,name:"Bros Pet Cat Food Paste(80gms, Chicken Paste - Kittens)",desc:"Complete nutrition.",img:"https://tunai.in/cdn/shop/files/61o1VBUMZpL._SL1500.jpg?v=1763459573&width=713", price: "1096", ingredients: "Fish, chicken, grains", benefits: "Complete cat nutrition"},
+{id:20,name:"Bros Pet Cat Food Paste(80gms, Sardine Paste - Adults)",desc:"High protein formula.",img:"https://tunai.in/cdn/shop/files/61i_3sFvguL._SL1500.jpg?v=1763459572&width=713", price: "1096", ingredients: "Meat proteins, amino acids", benefits: "High energy"},
+{id:21,name:"Bros Pet Cat Food Paste(80gms, Chicken)",desc:"For growing kittens.",img:"https://tunai.in/cdn/shop/files/61NjSJPJl5L._SL1500_17249b03-0892-4d9c-802d-64c39c2e5fe3.jpg?v=1763459572&width=713", price: "1096", ingredients: "Chicken, milk, vitamins", benefits: "Supports kitten development"},
+{id:22,name:"Bros Pet Cat Food Wet Gravy(80gms, Chicken)",desc:"Boosts immunity.",img:"https://tunai.in/cdn/shop/files/61NjSJPJl5L._SL1500_fe141607-aed4-4dcb-87b9-61fb127a51cf.jpg?v=1763459572&width=713", price: "1096", ingredients: "Vitamins, minerals", benefits: "Immune support"}
+]
+
+};
+
+
+ // ⚠️ KEEP YOUR FULL productData HERE (no changes)
+
+/* ---------------- SHOW PRODUCTS ---------------- */
+
+/* --- REPLACED FUNCTION --- */
+async function showProducts(category) {
+    try {
+        // 1. Get the Hardcoded Backup Data
+        const hardcoded = productData[category] || [];
+
+        // 2. Fetch from your MySQL Database
+        const response = await fetch('http://localhost:3000/api/admin/get-all-products'); 
+        const databaseProducts = await response.json();
+        console.log("DB PRODUCTS:", databaseProducts);
+        
+        // 3. Filter Database items by category
+      const filteredDB = databaseProducts.filter(p => 
+    p.category &&
+    p.category.toLowerCase().trim() === category.toLowerCase().trim()
+);
+    console.log("FILTERED:", filteredDB);
+        
+
+        // 4. COMBINE BOTH
+        let combined = [...hardcoded, ...filteredDB];
+
+        // 5. THE DE-DUPLICATOR 
+        // This keeps only the first version of any product with a specific name
+        allProducts = combined.filter((product, index, self) =>
+            index === self.findIndex((p) => (
+                p.name.toLowerCase().trim() === product.name.toLowerCase().trim()
+            ))
+        );
+
+        displayProducts(allProducts);
+        
+    } catch (err) {
+        console.error("Database error, showing VS Code backup:", err);
+        allProducts = productData[category] || [];
+        displayProducts(allProducts);
+    }
+}
+
+function closeDetails() {
+    const modal = document.getElementById("detailsModal");
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+function displayProducts(products) {
+    let area = document.getElementById("productArea");
+    area.innerHTML = "";
+
+    products.forEach(product => {
+        let rawImg = product.image || product.img || 'placeholder.jpg';
+        const imageSrc = (String(rawImg).startsWith('http')) ? rawImg : `images/${rawImg}`;
+
+        const price = String(product.price).replace(/[^0-9.]/g, "");
+
+        // ✅ SAFE DATA (fixes button click issue)
+        const data = encodeURIComponent(JSON.stringify({
+            id: product.id || Math.floor(Math.random()*100000),
+            name: product.name || "Product",
+            desc: product.description || product.desc || "No description",
+            img: imageSrc,
+            price: price,
+            ingredients: product.ingredients || "Premium mix",
+            benefits: product.benefits || "Healthy"
+        }));
+
+        area.innerHTML += `
+        <div class="card">
+            <img src="${imageSrc}" class="product-img" onerror="this.src='images/placeholder.jpg'">
+            <h3>${product.name}</h3>
+            <p>${(product.description || product.desc || "").substring(0, 45)}...</p>
+
+            <button onclick="showDetails('${data}')">
+                View Details
+            </button>
+        </div>`;
+    });
+}
+/* ---------------- SEARCH ---------------- */
+
+function searchProducts(){
+    let value = document.getElementById("searchBox").value.toLowerCase();
+
+    let filtered = allProducts.filter(p => {
+        let name = (p.name || "").toLowerCase();
+        let desc = (p.desc || p.description || "").toLowerCase();
+
+        return name.includes(value) || desc.includes(value);
+    });
+
+    displayProducts(filtered);
+}
+
+/* ---------------- DETAILS MODAL ---------------- */
+
+function showDetails(encodedData) {
+
+    const product = JSON.parse(decodeURIComponent(encodedData));
+
+    let modal = document.getElementById("detailsModal");
+    let box = document.querySelector(".details-box");
+
+    box.innerHTML = `
+        <img src="${product.img}" style="width:100%; height:200px; object-fit:cover; border-radius:10px;">
+        
+        <h2>${product.name}</h2>
+        <p>${product.desc}</p>
+
+        <p><strong>Price:</strong> ₹${product.price}</p>
+        <p><strong>Ingredients:</strong> ${product.ingredients}</p>
+        <p><strong>Benefits:</strong> ${product.benefits}</p>
+
+        <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
+            
+            <button onclick="addToCart(${product.id}, '${product.name}', '${product.price}', '${product.img}')">
+                🛒 Add to Cart
+            </button>
+
+            <button onclick="buyNow('${product.name}')">
+                ⚡ Buy Now
+            </button>
+
+            <button onclick="closeDetails()">
+                ❌ Close
+            </button>
+
+        </div>
+    `;
+
+    modal.style.display = "flex";
+}
+/* ---------------- ADD TO CART ---------------- */
+
+// Add to cart
+// Add 'img' to the parameters here
+function addToCart(id, name, price, img) {
+    let loggedUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!loggedUser) {
+        alert("Please login first");
+        return;
+    }
+
+    let userKey = "cart_" + loggedUser.email;
+    let currentCart = JSON.parse(localStorage.getItem(userKey)) || [];
+
+    let existing = currentCart.find(item => item.id === id);
+    if (existing) {
+        existing.quantity += 1;
+    } else {
+        currentCart.push({
+            id: id,
+            name: name,
+            price: price,
+            img: img, // Directly uses the image from the button
+            quantity: 1
+        });
+    }
+
+    localStorage.setItem(userKey, JSON.stringify(currentCart));
+    cart = currentCart; 
+    updateCartCount();
+    alert(name + " added to cart!");
+}
+
+// Buy now
+function buyNow(productName) {
+
+    let product = Object.values(productData).flat().find(p => p.name === productName);
+    if (!product) return;
+
+    let directCart = [{
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        img: product.img,
+        quantity: 1
+    }];
+
+    localStorage.setItem(userKey, JSON.stringify(directCart));
+
+    window.location.href = "checkout.html";
+}
+
+/* ---------------- CART FUNCTIONS ---------------- */
+
+function saveCart(){
+    localStorage.setItem(userKey, JSON.stringify(cart));
+    updateCartCount();
+}
+
+function updateCartCount() {
+    document.getElementById("cart-count").textContent =
+        cart.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+function toggleCart() {
+    let popup = document.getElementById("cartPopup");
+
+    if (popup.style.display === "flex") {
+        popup.style.display = "none";
+    } else {
+        updateCartDisplay();
+        popup.style.display = "flex";
+    }
+}
+
+function updateCartDisplay() {
+
+    let box = document.querySelector(".cart-box");
+
+    if (cart.length === 0) {
+        box.innerHTML = "<h3>Your Cart is Empty</h3><button onclick='toggleCart()'>Close</button>";
+        return;
+    }
+
+    let total = 0;
+
+    let html = `
+        <h3>Your Cart</h3>
+        <div class="cart-header">
+            <strong>Product</strong>
+            <strong>Price</strong>
+            <strong>Quantity</strong>
+            <strong>Remove</strong>
+        </div>
+    `;
+
+    cart.forEach(item => {
+        // Ensure price is treated as a number
+        let priceNum = parseFloat(String(item.price).replace(/[^0-9.]/g, '')) || 0;
+        total += priceNum * item.quantity;
+
+        html += `
+            <div class="cart-row">
+                <div class="cart-product">
+                    <img src="${item.img}" alt="${item.name}">
+                    <span>${item.name}</span>
+                </div>
+                <span>₹${priceNum.toFixed(2)}</span>
+              
+
+                // Replace the old <span>${item.quantity}</span> with this:
+<div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+    <button onclick="changeQuantity(${item.id}, -1)" 
+        style="width:28px; height:28px; cursor:pointer; border:1px solid #3b82f6; background:white; color:#3b82f6; border-radius:4px; font-weight:bold;">
+        -
+    </button>
+    
+    <span style="font-weight:bold; min-width:20px; text-align:center;">${item.quantity}</span>
+    
+    <button onclick="changeQuantity(${item.id}, 1)" 
+        style="width:28px; height:28px; cursor:pointer; border:1px solid #3b82f6; background:white; color:#3b82f6; border-radius:4px; font-weight:bold;">
+        +
+    </button>
+</div>
+                <button type="button" onclick="removeFromCart(${item.id})" 
+                    style="background:red; color:white; border:none; border-radius:3px; padding:5px 10px; cursor:pointer; font-weight:bold;">
+                    X
+                </button>
+            </div>
+        `;
+    });
+
+    html += `
+        <div class="cart-total">
+            <strong>Total: ₹${total}</strong>
+        </div>
+
+        <div class="cart-buttons">
+            <button onclick="toggleCart()">Continue Shopping</button>
+            <button onclick="goToCheckout()">Proceed to Checkout</button>
+        </div>
+    `;
+
+    box.innerHTML = html;
+}
+function changeQuantity(productId, amount) {
+    // 1. Find the item in the current user's cart
+    let item = cart.find(i => i.id === productId);
+    
+    if (item) {
+        item.quantity += amount;
+
+        // 2. If quantity drops to 0, remove it entirely
+        if (item.quantity <= 0) {
+            removeFromCart(productId);
+            return; 
+        }
+    }
+
+    // 3. Save the updated cart to localStorage for this specific user
+    let loggedUser = JSON.parse(localStorage.getItem("currentUser"));
+    let userKey = "cart_" + loggedUser.email;
+    localStorage.setItem(userKey, JSON.stringify(cart));
+    
+    // 4. Refresh the UI so the user sees the change instantly
+    updateCartCount();
+    updateCartDisplay();
+}
+
+function removeFromCart(productId) {
+    // Filter out the item with the matching ID
+    cart = cart.filter(item => item.id !== productId);
+    
+    // Save to the correct user-specific key
+    let loggedUser = JSON.parse(localStorage.getItem("currentUser"));
+    let userKey = "cart_" + loggedUser.email;
+    
+    localStorage.setItem(userKey, JSON.stringify(cart));
+    
+    // Update the UI
+    updateCartCount();
+    updateCartDisplay();
+}
+
+function goToCheckout() {
+    saveCart();
+    window.location.href = "checkout.html";
+}
+
+/* ---------------- PROFILE ---------------- */
+
+function toggleProfile(){
+
+let popup = document.getElementById("profilePopup");
+
+if(popup.style.display === "flex"){
+popup.style.display = "none";
+}else{
+
+let user = JSON.parse(localStorage.getItem("currentUser"));
+
+let fullName = (user.firstName || "") + " " + (user.lastName || "");
+document.getElementById("profileName").innerText = fullName.trim() || "User";
+document.getElementById("profileEmail").innerText = user.email;
+
+popup.style.display = "flex";
+}
+
+}
+
+function loadProfile() {
+    let loggedUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (!loggedUser) {
+        alert("Please login first");
+        window.location.href = "login.html";
+        return;
+    }
+
+    // Show full name properly
+    let fullName = (loggedUser.firstName || "") + " " + (loggedUser.lastName || "");
+
+    document.getElementById("profileName").textContent = fullName.trim() || "User";
+    document.getElementById("profileEmail").textContent = loggedUser.email || "user@example.com";
+
+    // Change welcome message
+    document.querySelector(".welcome").textContent = `Welcome, ${fullName || "User"}!`;
+}
+/* ---------------- LOAD DEFAULT ---------------- */
+/* ---------------- LOAD DEFAULT ---------------- */
+
+window.onload = function() {
+    let loggedUser = JSON.parse(localStorage.getItem("currentUser"));
+    
+    if (loggedUser) {
+        // 1. Initialize the global cart variable for this specific user
+        userKey = "cart_" + loggedUser.email; 
+        cart = JSON.parse(localStorage.getItem(userKey)) || [];
+        
+        // 2. Set up the UI
+        loadProfile();
+        showProducts("fish"); // Automatically loads fish products on start
+        updateCartCount();    
+          setInterval(createAnimal, 2000);
+    } else {
+        // If someone tries to access this page without logging in, send them back
+        window.location.href = "login.html";
+    }
+}
+
+function logout(){
+    // Remove only the current session
+    localStorage.removeItem("currentUser");
+    window.location.href = "index.html";
+}
+function closeProfile(){
+    document.getElementById("profilePopup").style.display = "none";
+}
+
+
+</script>
+<!-- Profile Popup -->
+<!-- Profile Popup -->
+<div class="profile-popup" id="profilePopup">
+    <div class="profile-box">
+        <h3>User Profile</h3>
+        <p><strong>Name:</strong> <span id="profileName">User</span></p>
+        <p><strong>Email:</strong> <span id="profileEmail">user@example.com</span></p>
+
+      <div style="display:flex; justify-content:center; gap:15px; margin-top:20px;">
+    
+    <button onclick="logout()" class="profile-action-btn">
+        Logout
+    </button>
+
+    <button onclick="closeProfile()" class="profile-action-btn">
+        Close
+    </button>
+
+</div>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="details-modal" id="detailsModal">
+    <div class="details-box">
+        <!-- Content will be populated by JS -->
+    </div>
+</div>
+<script>
+const animals = [
+    "🐱","🐟","🐠","🕊️","🐾","🐶",
+];
+
+function createAnimal() {
+    let animal = document.createElement("div");
+    animal.className = "animal";
+
+    // Random emoji
+    animal.innerText = animals[Math.floor(Math.random() * animals.length)];
+
+    // Random vertical start
+    let startY = Math.random() * window.innerHeight;
+    animal.style.top = startY + "px";
+    animal.style.left = "-50px";
+
+    // Random size
+    let size = Math.random() * 10 + 12;
+    animal.style.fontSize = size + "px";
+
+    document.body.appendChild(animal);
+
+    // Delay (VERY IMPORTANT)
+    setTimeout(() => {
+
+        let endX = window.innerWidth + 100;
+        let moveY = (Math.random() * 200) - 100;
+        let duration = Math.random() * 10 + 15;
+
+        animal.style.transition = `transform ${duration}s linear`;
+        animal.style.transform = `translate(${endX}px, ${moveY}px)`;
+
+        // Remove after animation
+        setTimeout(() => {
+            animal.remove();
+        }, duration * 1000);
+
+    }, 100);
+}
+</script>
+
+
+
+</body>
+</html>

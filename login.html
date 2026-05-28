@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(rgba(8, 7, 7, 0.5), rgba(0,0,0,0.6)),
+                  url('https://images.unsplash.com/photo-1623387641168-d9803ddd3f35?q=80&w=2000');
+      background-size: cover;
+      background-position: center;
+    }
+    /* NAVBAR */
+    .navbar {
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+      height: 65px;
+      padding: 0 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      color: white;
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+    .nav-links a {
+      color: #ddd;
+      margin-left: 25px;
+      text-decoration: none;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .nav-links a:hover {
+      color: #00c6ff;
+    }
+
+    /* CENTER */
+    .container {
+      height: calc(100vh - 65px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* GLASS BOX */
+    .login-box {
+      width: 380px;
+      padding: 40px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      color: white;
+      animation: fadeIn 1s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .login-box h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    /* INPUT - SAME WIDTH AS BUTTON */
+    .form-group {
+      position: relative;
+      margin-bottom: 25px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 15px 20px;  /* Increased padding to match button */
+      border: none;
+      border-bottom: 2px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.08);  /* Slight background for better visibility */
+      border-radius: 12px;  /* Rounded corners like button */
+      color: white;
+      outline: none;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .form-group input::placeholder { color: transparent; }
+
+    /* FLOAT LABEL - Adjusted for new input style */
+    .form-group label {
+      position: absolute;
+      left: 20px;  /* Match input padding */
+      top: 15px;   /* Match input padding */
+      color: #ccc;
+      transition: 0.3s;
+      font-size: 14px;
+      pointer-events: none;
+    }
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label {
+      top: -8px;
+      left: 15px;
+      font-size: 12px;
+      color: #00c6ff;
+      background: rgba(255,255,255,0.1);
+      padding: 0 5px;
+      border-radius: 4px;
+    }
+
+    /* ERRORS */
+    .error {
+      color: #ff6b6b;
+      font-size: 12px;
+      margin-top: 8px;
+      display: block;
+    }
+
+    /* BUTTON */
+    .login-btn {
+      width: 100%;
+      padding: 15px 20px;  /* Same padding as inputs */
+      border: none;
+      border-radius: 12px;  /* Same radius as inputs */
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .login-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 15px #00c6ff;
+    }
+
+    /* SIGNUP */
+    .signup-text {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .signup-text a {
+      color: #00c6ff;
+      text-decoration: none;
+    }
+
+    /* PASSWORD TOGGLE - Adjusted for new input padding */
+    .password-group { position: relative; }
+    .toggle-password {
+      position: absolute;
+      right: 15px;  /* Adjusted for input padding */
+      top: 17px;    /* Centered vertically */
+      cursor: pointer;
+      font-size: 18px;
+      color: #ccc;
+      transition: 0.3s;
+      z-index: 2;
+    }
+    .toggle-password:hover { color: #00c6ff; }
+
+    /* FOCUS EFFECT FOR INPUTS */
+    .form-group input:focus {
+      border-bottom: 2px solid #00c6ff;
+      box-shadow: 0 0 10px rgba(0,198,255,0.3);
+    }
+
+    /* MODAL */
+    .modal {
+      display:none;
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.6);
+      justify-content:center;
+      align-items:center;
+      z-index:999;
+    }
+
+    .modal-content {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      padding:30px;
+      border-radius:20px;
+      width:90%;
+      max-width:500px;
+      color:#fff;
+      position:relative;
+    }
+
+    .close {
+      position:absolute;
+      right:15px;
+      top:10px;
+      font-size:25px;
+      cursor:pointer;
+      color: #ccc;
+    }
+    .close:hover { color: #fff; }
+
+    .modal-content h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .modal-content p, .modal-content ul {
+      line-height: 1.6;
+    }
+
+    .modal-content ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="logo">STAR FARMS</div>
+   <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a id="about-link">About</a>
+      <a id="products-link">Products</a>
+      <a id="contact-link">Contact</a>
+    </div>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <div class="container">
+    <div class="login-box">
+      <h2>Log In</h2>
+      <form id="loginForm" novalidate>
+
+        <!-- USERNAME -->
+        <div class="form-group">
+          <input type="text" id="username" placeholder=" " required>
+          <label>Email / Phone</label>
+          <div class="error" id="userError"></div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form-group password-group">
+          <input type="password" id="password" placeholder=" " required>
+          <label>Password</label>
+          <span class="toggle-password" onclick="togglePassword()">👁</span>
+          <div class="error" id="passError"></div>
+        </div>
+
+        <div class="error" id="loginError"></div>
+
+        <button type="submit" class="login-btn">LOG IN</button>
+
+        <div class="signup-text">
+          Don't have an account? <a href="signup.html">Sign Up</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div id="about-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" data-modal="about-modal">&times;</span>
+      <h2>About STAR FARMS</h2>
+      <p>We are committed to sustainable organic farming, providing chemical-free produce for healthy living.</p>
+      <p>Our mission is to support local communities and biodiversity while delivering fresh, nutritious products.</p>
+    </div>
+  </div>
+
+  <div id="products-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" data-modal="products-modal">&times;</span>
+      <h2>Our Products</h2>
+      <ul>
+        <li><strong>Fish Food:</strong> High-quality pellets & supplements.</li>
+        <li><strong>Bird Food:</strong> Seed mixes & vitamins.</li>
+        <li><strong>Cat Food:</strong> Nutritious dry & wet meals.</li>
+        <li><strong>Dog Food:</strong> Balanced food & immunity support.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="contact-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" data-modal="contact-modal">&times;</span>
+      <h2>Contact Us</h2>
+      <p><strong>Email:</strong> starfarms@gmail.com</p>
+      <p><strong>Phone:</strong> 9876543210</p>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passInput = document.getElementById("password");
+      const icon = document.querySelector(".toggle-password");
+      if (passInput.type === "password") {
+        passInput.type = "text";
+        icon.textContent = "🙈";
+      } else {
+        passInput.type = "password";
+        icon.textContent = "👁";
+      }
+    }
+
+    // ===== VALIDATION =====
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const usernameInput = document.getElementById("username");
+      const passwordInput = document.getElementById("password");
+      const userError = document.getElementById("userError");
+      const passError = document.getElementById("passError");
+      const loginError = document.getElementById("loginError");
+
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      // Clear previous errors
+      userError.innerText = "";
+      passError.innerText = "";
+      loginError.innerText = "";
+
+      let isValid = true;
+
+      // Email pattern
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      // USERNAME VALIDATION
+      if (!username) {
+        userError.innerText = "Email / Phone is required";
+        isValid = false;
+      } else if (!emailPattern.test(username)) {
+        userError.innerText = "Please enter a valid email";
+        isValid = false;
+      }
+
+      // PASSWORD VALIDATION
+      if (!password) {
+        passError.innerText = "Password is required";
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // ===== LOGIN REQUEST =====
+      fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("SERVER SENT THIS:", data);
+        if (data.user) {
+          localStorage.setItem("currentUser", JSON.stringify(data.user));
+          window.location.href = "second.html";
+        } else {
+          loginError.innerText = data.error || "Invalid username or password";
+          usernameInput.value = "";
+          passwordInput.value = "";
+        }
+      })
+      .catch(err => {
+        loginError.innerText = "Server error, try again later";
+        console.error(err);
+      });
+    });
+
+    // MODALS
+    const modals = {
+      "about-link": "about-modal",
+      "products-link": "products-modal",
+      "contact-link": "contact-modal"
+    };
+
+    Object.keys(modals).forEach(id => {
+      document.getElementById(id).addEventListener("click", () => {
+        document.getElementById(modals[id]).style.display = "flex";
+      });
+    });
+
+    // Close modal
+    document.querySelectorAll(".close").forEach(btn => {
+      btn.addEventListener("click", function() {
+        document.getElementById(this.getAttribute("data-modal")).style.display = "none";
+      });
+    });
+
+    // Click outside to close
+    window.addEventListener("click", function(e) {
+      if (e.target.classList.contains("modal")) {
+        e.target.style.display = "none";
+      }
+    });
+  </script>
+
+</body>
+</html>

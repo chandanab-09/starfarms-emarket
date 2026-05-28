@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Star Farms - Checkout</title>
+<style>
+
+/* ===== BODY ===== */
+body{
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(135deg, #e3f2fd, #f5f7fa);
+    margin:0;
+}
+
+/* ===== HEADER ===== */
+header{
+    background:#1e90ff;
+    color:white;
+    padding:15px;
+    font-size:22px;
+    font-weight:bold;
+    text-align:center;
+    letter-spacing:1px;
+    box-shadow:0 0 10px #1e90ff, 0 0 20px #1e90ff;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container{
+    max-width:1100px;
+    margin:30px auto;
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1), 0 0 15px rgba(30,144,255,0.2);
+}
+
+/* ===== LAYOUT ===== */
+.checkout-wrapper{
+    display:flex;
+    gap:40px;
+}
+
+/* LEFT */
+.form-section{
+    flex:2;
+}
+
+/* RIGHT */
+.summary-section{
+    flex:1;
+    background:#f9fcff;
+    padding:20px;
+    border-radius:10px;
+    border:1px solid #e0e0e0;
+    box-shadow:0 0 10px rgba(30,144,255,0.2);
+}
+
+/* ===== FORM ===== */
+.form-group{
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    font-weight:600;
+    margin-bottom:5px;
+    color:#1e90ff;
+}
+
+input, textarea, select{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:14px;
+    transition:0.3s;
+}
+
+input:focus, textarea:focus, select:focus{
+    border-color:#1e90ff;
+    box-shadow:0 0 8px #1e90ff;
+    outline:none;
+}
+
+textarea{
+    height:50px;
+    resize:none;
+}
+
+/* HEADINGS */
+h2{
+    border-bottom:2px solid #e3f2fd;
+    padding-bottom:5px;
+    color:#1e90ff;
+}
+
+/* ===== ORDER SUMMARY ===== */
+.order-row{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 0;
+    border-bottom:1px solid #eee;
+}
+
+.total-section{
+    margin-top:15px;
+    text-align:right;
+}
+
+/* ===== BUTTON ===== */
+.place-btn{
+    width:100%;
+    padding:12px;
+    background:#1e90ff;
+    color:white;
+    border:none;
+    font-size:16px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:20px;
+    box-shadow:0 0 10px #1e90ff, 0 0 20px #1e90ff;
+    transition:0.3s;
+}
+
+.place-btn:hover{
+    background:#187bcd;
+    box-shadow:0 0 15px #1e90ff, 0 0 30px #1e90ff;
+}
+
+/* RADIO */
+input[type="radio"]{
+    accent-color:#1e90ff;
+}
+
+/* ERROR */
+.error{
+    color:red;
+    font-size:13px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+    .checkout-wrapper{
+        flex-direction:column;
+    }
+}
+/* ===== FLOATING ANIMAL BACKGROUND ===== */
+/* ===== HEAVY FLOATING ANIMAL CROWD ===== */
+/* ===== ADVANCED FLOATING ANIMALS ===== */
+.animal {
+    position: fixed;
+    opacity: 0.15;
+    pointer-events: none;
+
+    z-index: 0;
+    will-change: transform;
+}
+
+/* Keep UI above */
+header, .container {
+    position: relative;
+    z-index: 2;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>⭐ STAR FARMS - CHECKOUT</header>
+
+<div class="container">
+
+<div class="checkout-wrapper">
+
+<!-- LEFT SIDE -->
+<div class="form-section">
+
+<h2>Customer Details</h2>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="email" placeholder="Enter your email">
+<p id="emailError" class="error"></p>
+</div>
+
+<div class="form-group">
+<label>Name</label>
+<input type="text" id="name" placeholder="Full Name">
+<p id="nameError" class="error"></p>
+</div>
+
+<div class="form-group">
+<label>Mobile</label>
+<input type="text" id="mobile" placeholder="Mobile Number">
+<p id="mobileError" class="error"></p>
+</div>
+
+<div class="form-group">
+<label>Address</label>
+<textarea id="address" placeholder="Full Address"></textarea>
+<p id="addressError" class="error"></p>
+</div>
+
+<div class="form-group">
+<label>City</label>
+<select id="city">
+<option value="">Select City</option>
+<option>Mumbai</option>
+<option>Delhi</option>
+<option>Bengaluru</option>
+<option>Hyderabad</option>
+<option>Chennai</option>
+<option>Kolkata</option>
+<option>Pune</option>
+<option>Ahmedabad</option>
+</select>
+<p id="cityError" class="error"></p>
+</div>
+
+<div class="form-group">
+<label>Pincode</label>
+<input type="text" id="pincode" placeholder="Pincode">
+<p id="pincodeError" class="error"></p>
+</div>
+
+<h2>Payment</h2>
+
+<div class="form-group">
+    <input type="radio" name="payment" value="cod"> Cash on Delivery<br><br>
+    <input type="radio" name="payment" value="online"> UPI / Card
+    <p id="paymentError" class="error"></p>
+</div>
+
+<button class="place-btn" id="orderBtn" onclick="placeOrder()">Place Order</button>
+
+</div>
+
+
+<!-- RIGHT SIDE -->
+<div class="summary-section">
+
+<h2>Order Summary</h2>
+
+<div id="order-summary"></div>
+
+<div class="total-section">
+<p id="items-total"></p>
+<p>Delivery Fee: Free</p>
+<h3 id="grand-total"></h3>
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+<script>
+window.onload = function() {
+
+    // 1. Get User Data
+    let loggedUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (!loggedUser) {
+        alert("Please login first");
+        window.location.href = "login.html";
+        return;
+    }
+
+    // 🟢 DEBUG (optional - remove later)
+    console.log("Logged User Data:", loggedUser);
+
+    // 2. AUTO-FILL (FIXED PROPERLY)
+
+    // Email
+    if (loggedUser.email) {
+        document.getElementById("email").value = loggedUser.email;
+    }
+
+    // Name (first + last)
+    document.getElementById("name").value =
+        (loggedUser.firstName || "") + " " + (loggedUser.lastName || "");
+
+    // Phone (ONLY phone, not mobile)
+    document.getElementById("mobile").value = loggedUser.phone || "";
+
+    // Address
+    document.getElementById("address").value = loggedUser.address || "";
+
+    // Pincode
+    document.getElementById("pincode").value = loggedUser.pincode || "";
+
+    // City dropdown
+    if (loggedUser.city) {
+        let cityDropdown = document.getElementById("city");
+
+        for (let i = 0; i < cityDropdown.options.length; i++) {
+            if (cityDropdown.options[i].text.toLowerCase() === loggedUser.city.toLowerCase()) {
+                cityDropdown.selectedIndex = i;
+                break;
+            }
+        }
+    }
+
+    // 3. LOAD CART SUMMARY (NO CHANGE)
+    let userKey = "cart_" + loggedUser.email;
+    let cart = JSON.parse(localStorage.getItem(userKey)) || [];
+    let summary = document.getElementById("order-summary");
+    let total = 0;
+
+    if (!cart || cart.length === 0) {
+        summary.innerHTML = "<p>Your cart is empty.</p>";
+        document.getElementById("items-total").innerHTML = "Items Total: ₹0";
+        document.getElementById("grand-total").innerHTML = "Total: ₹0";
+        return;
+    }
+
+    summary.innerHTML = "";
+
+    cart.forEach(item => {
+        let price = parseFloat(String(item.price).replace(/[^0-9.]/g, '')) || 0;
+        let itemTotal = price * item.quantity;
+        total += itemTotal;
+
+        summary.innerHTML += `
+            <div class="order-row">
+                <span>${item.name} (Qty: ${item.quantity})</span>
+                <span>₹${itemTotal}</span>
+            </div>
+        `;
+    });
+
+    document.getElementById("items-total").innerHTML = "Items Total: ₹" + total;
+    document.getElementById("grand-total").innerHTML = "Total: ₹" + total;
+};
+
+/* Validation */
+function placeOrder(){
+
+let email = document.getElementById("email").value.trim();
+let name = document.getElementById("name").value.trim();
+let mobile = document.getElementById("mobile").value.trim();
+let address = document.getElementById("address").value.trim();
+let city = document.getElementById("city").value;
+let pincode = document.getElementById("pincode").value.trim();
+
+let emailError = document.getElementById("emailError");
+let nameError = document.getElementById("nameError");
+let mobileError = document.getElementById("mobileError");
+let addressError = document.getElementById("addressError");
+let cityError = document.getElementById("cityError");
+let pincodeError = document.getElementById("pincodeError");
+
+emailError.innerHTML = "";
+nameError.innerHTML = "";
+mobileError.innerHTML = "";
+addressError.innerHTML = "";
+cityError.innerHTML = "";
+pincodeError.innerHTML = "";
+
+let isValid = true;
+
+let emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+let mobilePattern = /^[0-9]{10}$/;
+let pinPattern = /^[0-9]{6}$/;
+
+if(email === ""){
+emailError.innerHTML = "Email is required";
+isValid = false;
+}
+else if(!email.match(emailPattern)){
+emailError.innerHTML = "Enter valid email";
+isValid = false;
+}
+
+if(name === ""){
+nameError.innerHTML = "Name is required";
+isValid = false;
+}
+
+if(mobile === ""){
+mobileError.innerHTML = "Mobile number is required";
+isValid = false;
+}
+else if(!mobile.match(mobilePattern)){
+mobileError.innerHTML = "Mobile must be 10 digits";
+isValid = false;
+}
+
+if(address === ""){
+addressError.innerHTML = "Address is required";
+isValid = false;
+}
+
+if(city === ""){
+cityError.innerHTML = "Please select city";
+isValid = false;
+}
+
+if(pincode === ""){
+pincodeError.innerHTML = "Pincode is required";
+isValid = false;
+}
+else if(!pincode.match(pinPattern)){
+pincodeError.innerHTML = "Pincode must be 6 digits";
+isValid = false;
+}
+let payment = document.querySelector('input[name="payment"]:checked');
+let paymentError = document.getElementById("paymentError");
+
+paymentError.innerHTML = "";
+
+if(!payment){
+    paymentError.innerHTML = "Please select a payment method";
+    isValid = false;
+}
+
+if(!isValid){
+return;
+}
+let paymentOptions = document.getElementsByName("payment");
+let paymentSelected = false;
+
+for(let i = 0; i < paymentOptions.length; i++){
+    if(paymentOptions[i].checked){
+        paymentSelected = true;
+        break;
+    }
+}
+
+if(!paymentSelected){
+    document.getElementById("paymentError").innerHTML = "Please select payment method";
+    isValid = false;
+} else {
+    document.getElementById("paymentError").innerHTML = "";
+}
+let selectedPayment = "";
+for(let i = 0; i < paymentOptions.length; i++){
+    if(paymentOptions[i].checked){
+        selectedPayment = paymentOptions[i].value;
+    }
+}
+
+/* ✅ SAVE CUSTOMER DATA */
+let customer = {
+    name: name,
+    email: email,
+    phone: mobile,
+    address: address,
+    city: city,
+    pincode: pincode,
+      payment: selectedPayment
+};
+
+localStorage.setItem("customerData", JSON.stringify(customer));
+
+
+
+/* ❌ DO NOT REMOVE CART HERE */
+/* ❌ DO NOT ALERT */
+// ✅ GET CART PROPERLY
+let loggedUser = JSON.parse(localStorage.getItem("currentUser"));
+let userKey = "cart_" + loggedUser.email;
+let cart = JSON.parse(localStorage.getItem(userKey)) || [];
+
+// Check empty cart
+if(cart.length === 0){
+    alert("Cart is empty!");
+    return;
+}
+
+// ✅ CALCULATE TOTAL
+let total = 0;
+cart.forEach(item => {
+    let price = parseFloat(String(item.price).replace(/[^0-9.]/g,'')) || 0;
+    total += price * item.quantity;
+});
+
+// ✅ SAVE ORDER DATA (AFTER cart + total ready)
+let orderData = {
+    customer: customer,
+    items: cart,
+    total: total
+};
+
+localStorage.setItem("orderData", JSON.stringify(orderData));
+
+
+
+
+// Button loading
+document.getElementById("orderBtn").disabled = true;
+document.getElementById("orderBtn").innerText = "Placing Order...";
+
+// 🚀 SEND TO BACKEND
+fetch("http://localhost:3000/api/place-order", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        customer: customer,
+        cart: cart,
+        total: total
+    })
+})
+.then(res => res.json())
+.then(data => {
+
+    if(data.success){
+        // ✅ Save orderId (optional)
+        localStorage.setItem("lastOrderId", data.orderId);
+
+        alert("Order placed sucessfully");
+
+        // ✅ Go to confirmation page
+        window.location.href = "confirmation.html";
+    } else {
+        alert("Order failed: " + data.message);
+    }
+
+})
+.catch(err => {
+    console.error(err);
+    alert("Server error");
+
+    document.getElementById("orderBtn").disabled = false;
+    document.getElementById("orderBtn").innerText = "Place Order";
+});
+
+
+}
+
+</script>
+
+<script>
+
+/* ===== RANDOM ANIMAL GENERATOR ===== */
+
+const animals = ["🐶","🐱","🐟","🐠","🕊️","🐾","🐕","🐈"];
+function createAnimal() {
+    let animal = document.createElement("div");
+    animal.className = "animal";
+
+    // Random emoji
+    animal.innerText = animals[Math.floor(Math.random() * animals.length)];
+
+    // Random vertical start
+    let startY = Math.random() * window.innerHeight;
+    animal.style.top = startY + "px";
+    animal.style.left = "-50px";
+
+    // Random size
+    let size = Math.random() * 20 + 20;
+    animal.style.fontSize = size + "px";
+
+    document.body.appendChild(animal);
+
+    // IMPORTANT: delay to trigger animation
+    setTimeout(() => {
+
+        let endX = window.innerWidth + 100;
+        let moveY = (Math.random() * 200) - 100;
+        let duration = Math.random() * 10 + 15;
+
+        animal.style.transition = `transform ${duration}s linear`;
+        animal.style.transform = `translate(${endX}px, ${moveY}px)`;
+
+        // remove after animation
+        setTimeout(() => {
+            animal.remove();
+        }, duration * 1000);
+
+    }, 100); // 👈 THIS LINE FIXES EVERYTHING
+}
+setInterval(createAnimal, 500);
+</script>
+
+
+</body>
+</html>

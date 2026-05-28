@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup Successful</title>
+  <style>
+    /* ===== BODY & BACKGROUND SAME AS LOGIN ===== */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)),
+                  url('https://images.unsplash.com/photo-1623387641168-d9803ddd3f35?q=80&w=2000');
+      background-size: cover;
+      background-position: center;
+      color: white;
+    }
+
+    /* ===== GLASS BOX ===== */
+    .success-box {
+      width: 400px;
+      padding: 40px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== TEXT STYLING ===== */
+    .success-box h1 {
+      font-size: 26px;
+      margin-bottom: 15px;
+      color: #00c6ff; /* highlight color like login page focus */
+    }
+
+    .success-box p {
+      font-size: 16px;
+      margin-bottom: 25px;
+      color: #ccc;
+    }
+
+    /* ===== BUTTON ===== */
+    .success-box a.btn {
+      display: inline-block;
+      padding: 12px 25px;
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+      color: white;
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .success-box a.btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00c6ff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="success-box">
+    <h1>Signup Successful ✅</h1>
+    <p>Welcome to STAR FARMS! Your account has been created.</p>
+    <a href="second.html" class="btn">Start Shopping</a>
+  </div>
+
+</body>
+</html>

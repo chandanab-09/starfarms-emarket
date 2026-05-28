@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>STAR FARMS - Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* RESET */
+* {margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif;}
+body {
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)),
+              url('https://images.unsplash.com/photo-1623387641168-d9803ddd3f35?q=80&w=2000') center/cover no-repeat;
+  color:#fff;
+  min-height: 100vh;
+}
+
+/* NAVBAR */
+.navbar {
+  position: fixed; top:0; width:100%; z-index:1000;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:0 40px; height:65px;
+  background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
+}
+.logo { font-weight:700; font-size:20px; letter-spacing:1px; color:#fff; }
+.nav-links a {
+  margin-left:25px; text-decoration:none; font-weight:500; font-size:16px; color:#ddd; position:relative; transition:0.3s;
+  cursor:pointer;
+}
+.nav-links a::after {
+  content:""; position:absolute; width:0; height:2px; left:0; bottom:-5px;
+  background:#00c6ff; transition:0.3s;
+}
+.nav-links a:hover::after { width:100%; }
+
+/* HERO SECTION */
+.hero {
+  height:100vh; padding-top:65px;
+  display:flex; justify-content:center; align-items:center; text-align:center;
+}
+.hero-content {
+  background: rgba(255,255,255,0.05); backdrop-filter: blur(12px);
+  padding:40px; border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,0.4);
+  animation: fadeIn 1s ease;
+}
+.hero h1 { font-size:48px; margin-bottom:20px; color:#fff; }
+.hero p { font-size:20px; margin-bottom:30px; color:#ddd; line-height:1.4; }
+.hero .btn {
+  display: inline-block;
+  padding:14px 28px; background: linear-gradient(45deg, #00c6ff, #0072ff); color:#fff;
+  text-decoration:none; font-weight:600; border-radius:30px; transition:0.3s;
+  border: none; cursor: pointer;
+}
+.hero .btn:hover { transform:scale(1.05); box-shadow:0 0 15px #00c6ff; }
+
+/* MODALS */
+.modal {
+  display:none; position:fixed; z-index:2000; left:0; top:0;
+  width:100%; height:100%; background: rgba(0,0,0,0.5);
+  justify-content:center; align-items:center;
+  padding:20px;
+}
+.modal-content {
+  background: rgba(255,255,255,0.05); backdrop-filter: blur(12px);
+  padding:40px; border-radius:20px; width:100%; max-width:500px;
+  max-height:80%; overflow-y:auto; color:#fff; position:relative;
+  animation: fadeIn 0.5s ease;
+  text-align: center;
+}
+.modal-content h2 { margin-top:0; margin-bottom:15px; font-size:26px; }
+.modal-content p, .modal-content ul, .modal-content li { line-height:1.6; color:#ddd; font-size:16px; }
+
+/* SELECTION BUTTONS */
+.selection-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 25px;
+}
+.selection-btn {
+  padding: 15px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+  color: #fff;
+  font-size: 18px;
+}
+.admin-choice {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #00c6ff;
+}
+.admin-choice:hover {
+  background: #00c6ff;
+  color: #000;
+}
+.user-choice {
+  background: linear-gradient(45deg, #00c6ff, #0072ff);
+}
+.user-choice:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 15px #00c6ff;
+}
+
+.close {
+  position:absolute; top:10px; right:20px; font-size:28px; font-weight:bold; color:#aaa;
+  cursor:pointer; transition:0.3s;
+}
+.close:hover { color:#fff; }
+
+/* FOOTER */
+.footer { text-align:center; padding:20px; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); color:#fff; position: relative; bottom: 0; width: 100%; }
+
+/* ANIMATION */
+@keyframes fadeIn { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
+
+@media(max-width:600px){
+  .hero h1 { font-size:36px; }
+  .hero p { font-size:16px; }
+  .nav-links a { font-size:14px; margin-left:15px; }
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="logo">STAR FARMS</div>
+  <div class="nav-links">
+    <a href="#home">Home</a>
+    <a id="products-link">Products</a>
+    <a id="contact-link">Contact</a>
+    <a href="login.html">Login</a>
+  </div>
+</div>
+
+<section id="home" class="hero">
+  <div class="hero-content">
+    <h1>Welcome to STAR FARMS</h1>
+    <p>Fresh, organic produce straight from our fields to your table.</p>
+    <button id="explore-btn" class="btn">Explore More</button>
+  </div>
+</section>
+
+<div id="selection-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" data-modal="selection-modal">&times;</span>
+    <h2>Continue As</h2>
+    <p>Please select your account type to proceed.</p>
+    <div class="selection-container">
+      <a href="adminlogin.html" class="selection-btn admin-choice">Admin Access</a>
+      <a href="login.html" class="selection-btn user-choice">User Login</a>
+    </div>
+  </div>
+</div>
+
+<div id="products-modal" class="modal">
+  <div class="modal-content" style="text-align: left;">
+    <span class="close" data-modal="products-modal">&times;</span>
+    <h2>Our Products</h2>
+    <ul style="padding-left: 20px;">
+      <li style="margin-bottom: 8px;"><strong>Fish Food:</strong> High-quality pellets & supplements.</li>
+      <li style="margin-bottom: 8px;"><strong>Bird Food:</strong> Seed mixes & vitamins.</li>
+      <li style="margin-bottom: 8px;"><strong>Cat Food:</strong> Nutritious dry & wet meals.</li>
+      <li style="margin-bottom: 8px;"><strong>Dog Food:</strong> Balanced food & immunity support.</li>
+    </ul>
+  </div>
+</div>
+
+<div id="contact-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" data-modal="contact-modal">&times;</span>
+    <h2>Contact Us</h2>
+    <p style="margin-bottom: 20px;">Have a question? Send us a message!</p>
+    
+    <form id="contactForm">
+      <input type="text" id="contactName" placeholder="Your Name" required 
+             style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:none;">
+      
+      <input type="email" id="contactEmail" placeholder="Your Email" required 
+             style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:none;">
+      
+      <textarea id="contactMessage" placeholder="How can we help?" required rows="3" 
+                style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; border:none;"></textarea>
+      
+      <button type="submit" class="btn" style="width:100%;">Send Message</button>
+    </form>
+
+    <div style="margin-top:20px; font-size:14px; color:#aaa;">
+      <p>Email: starfarmes@gmail.com</p>
+      <p>Phone: 9876543210</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>&copy; 2023 STAR FARMS. All rights reserved.</p>
+</div>
+
+<script>
+// Smooth scroll to Home
+document.querySelector('a[href="#home"]').addEventListener('click', e => {
+  e.preventDefault();
+  document.querySelector('#home').scrollIntoView({ behavior:'smooth' });
+});
+
+// Modal Logic Mapping
+const modalTriggers = {
+  'explore-btn': 'selection-modal',
+  'products-link': 'products-modal',
+  'contact-link': 'contact-modal'
+};
+
+// Open Modals
+Object.keys(modalTriggers).forEach(triggerId => {
+  document.getElementById(triggerId).addEventListener('click', () => {
+    document.getElementById(modalTriggers[triggerId]).style.display = 'flex';
+  });
+});
+
+// Close modal via X button
+document.querySelectorAll('.close').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.getElementById(this.getAttribute('data-modal')).style.display = 'none';
+  });
+});
+
+// Click outside modal to close
+window.addEventListener('click', function(e) {
+  if(e.target.classList.contains('modal')) {
+    e.target.style.display = 'none';
+  }
+});
+
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const contactData = {
+        name: document.getElementById('contactName').value,
+        email: document.getElementById('contactEmail').value,
+        message: document.getElementById('contactMessage').value
+    };
+
+    try {
+        const res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(contactData)
+        });
+
+        if (res.ok) {
+            alert("Message sent successfully! 📩");
+            document.getElementById('contactForm').reset();
+            document.getElementById('contact-modal').style.display = 'none';
+        } else {
+            alert("Error sending message. Please try again.");
+        }
+    } catch (err) {
+        console.error("Contact error:", err);
+    }
+});
+</script>
+
+</body>
+</html>

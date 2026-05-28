@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up</title>
+  <style>
+    /* ===== BODY ===== */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)),
+                  url('https://images.unsplash.com/photo-1623387641168-d9803ddd3f35?q=80&w=2000');
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+      height: 60px;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+    .nav-links a {
+      color: #ddd;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 13px;
+      transition: 0.3s;
+    }
+    .nav-links a:hover {
+      color: #00c6ff;
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      height: calc(100vh - 60px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* ===== SIGNUP BOX ===== */
+    .signup-box {
+      width: 520px;
+      padding: 30px 35px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4), 0 0 20px rgba(0,198,255,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: white;
+      animation: fadeIn 0.8s ease;
+      position: relative;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .signup-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* ===== FORM ROWS ===== */
+    .form-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .form-row .form-group {
+      flex: 1;
+      min-width: 150px;
+    }
+    .form-row .form-group + .form-group {
+      border-left: 1px solid rgba(255,255,255,0.2);
+      padding-left: 15px;
+      margin-left: 15px;
+    }
+    @media (max-width: 600px) {
+      .form-row {
+        flex-direction: column;
+      }
+      .form-row .form-group + .form-group {
+        border-left: none;
+        padding-left: 0;
+        margin-left: 0;
+      }
+    }
+
+    /* ===== INPUT & FLOAT LABEL ===== */
+    .form-group {
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-bottom: 2px solid rgba(255,255,255,0.5);
+      background: transparent;
+      color: white;
+      outline: none;
+      font-size: 13px;
+    }
+    .form-group input::placeholder { /* needed for :placeholder-shown */
+      color: transparent;
+    }
+    .form-group label {
+      position: absolute;
+      left: 0;
+      top: 10px;
+      color: #ccc;
+      font-size: 12px;
+      transition: 0.3s;
+      pointer-events: none;
+    }
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label {
+      top: -8px;
+      font-size: 10px;
+      color: #00c6ff;
+      background: rgba(0,0,0,0.05);
+      padding: 0 4px;
+    }
+
+    /* ===== ERRORS ===== */
+    .error {
+      color: #ff6b6b;
+      font-size: 10px;
+      margin-top: 3px;
+      display: block;
+    }
+
+    /* ===== BUTTON ===== */
+    .signup-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 30px;
+      border: none;
+      background: linear-gradient(45deg, #00c6ff, #0072ff);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .signup-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00c6ff;
+    }
+
+    /* ===== LOGIN TEXT ===== */
+    .login-text {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .login-text a {
+      color: #00c6ff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="logo">STAR FARMS</div>
+    <div class="nav-links">
+      <a href="login.html">Login</a>
+    </div>
+  </div>
+
+  <!-- SIGNUP FORM -->
+  <div class="container">
+    <div class="signup-box">
+      <h2>Create Account</h2>
+      <form id="signupForm" novalidate>
+
+        <!-- First & Last Name -->
+        <div class="form-row">
+          <div class="form-group">
+            <input type="text" id="firstName" placeholder=" ">
+            <label>First Name</label>
+            <div class="error" id="firstNameError"></div>
+          </div>
+          <div class="form-group">
+            <input type="text" id="lastName" placeholder=" ">
+            <label>Last Name</label>
+            <div class="error" id="lastNameError"></div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <input type="text" id="email" placeholder=" ">
+          <label>Email</label>
+          <div class="error" id="emailError"></div>
+        </div>
+
+        <!-- Password & Confirm -->
+        <div class="form-row">
+          <div class="form-group">
+            <input type="password" id="password" placeholder=" ">
+            <label>Password</label>
+            <div class="error" id="passError"></div>
+          </div>
+          <div class="form-group">
+            <input type="password" id="confirmPassword" placeholder=" ">
+            <label>Confirm Password</label>
+            <div class="error" id="confirmError"></div>
+          </div>
+        </div>
+
+        <!-- Phone & Pincode -->
+        <div class="form-row">
+          <div class="form-group">
+            <input type="text" id="phone" placeholder=" ">
+            <label>Phone Number</label>
+            <div class="error" id="phoneError"></div>
+          </div>
+          <div class="form-group">
+            <input type="text" id="pincode" placeholder=" ">
+            <label>Pincode</label>
+            <div class="error" id="pincodeError"></div>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="form-group">
+          <input type="text" id="address" placeholder=" ">
+          <label>Address</label>
+          <div class="error" id="addressError"></div>
+        </div>
+
+        <!-- State & City -->
+        <div class="form-row">
+          <div class="form-group">
+            <input type="text" id="state" placeholder=" " list="stateList">
+            <label>State</label>
+            <datalist id="stateList">
+              <option value="Andhra Pradesh">
+              <option value="Karnataka">
+              <option value="Maharashtra">
+              <option value="Tamil Nadu">
+              <option value="Telangana">
+              <option value="Kerala">
+              <option value="Uttar Pradesh">
+            </datalist>
+            <div class="error" id="stateError"></div>
+          </div>
+          <div class="form-group">
+            <input type="text" id="city" placeholder=" " list="cityList">
+            <label>City</label>
+            <datalist id="cityList">
+              <option value="Hyderabad">
+              <option value="Bengaluru">
+              <option value="Chennai">
+              <option value="Mumbai">
+              <option value="Pune">
+              <option value="Thiruvananthapuram">
+              <option value="Lucknow">
+            </datalist>
+            <div class="error" id="cityError"></div>
+          </div>
+        </div>
+
+        <!-- Sign Up Button -->
+        <button type="submit" class="signup-btn">Sign Up</button>
+
+        <div class="login-text">
+          Already have an account? <a href="login.html">Log In</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== JS VALIDATION ===== -->
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const firstName = document.getElementById("firstName").value.trim();
+      const lastName = document.getElementById("lastName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const confirm = document.getElementById("confirmPassword").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const state = document.getElementById("state").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const pincode = document.getElementById("pincode").value.trim();
+
+      // Clear previous errors
+      document.querySelectorAll(".error").forEach(el => el.innerText = "");
+
+      let isValid = true;
+
+      if (!firstName || !/^[a-zA-Z\s]+$/.test(firstName)) {
+        document.getElementById("firstNameError").innerText = "Required and must contain only letters";
+        isValid = false;
+      }
+      if (!lastName || !/^[a-zA-Z\s]+$/.test(lastName)) {
+        document.getElementById("lastNameError").innerText = "Required and must contain only letters";
+        isValid = false;
+      }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById("emailError").innerText = "Required and must be a valid email";
+        isValid = false;
+      }
+      if (password.length < 8 || !/(?=.*[A-Z])(?=.*\d)/.test(password)) {
+        document.getElementById("passError").innerText = "Min 8 chars, 1 uppercase & 1 number";
+        isValid = false;
+      }
+      if (password !== confirm) {
+        document.getElementById("confirmError").innerText = "Passwords do not match";
+        isValid = false;
+      }
+      if (!phone || !/^\d{10}$/.test(phone)) {
+        document.getElementById("phoneError").innerText = "Required and must be 10 digits";
+        isValid = false;
+      }
+      if (!pincode || !/^\d{6}$/.test(pincode)) {
+        document.getElementById("pincodeError").innerText = "Required and must be 6 digits";
+        isValid = false;
+      }
+      if (!address) {
+        document.getElementById("addressError").innerText = "Required";
+        isValid = false;
+      }
+      if (!state) {
+        document.getElementById("stateError").innerText = "Required";
+        isValid = false;
+      }
+      if (!city) {
+        document.getElementById("cityError").innerText = "Required";
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Backend call
+      const formData = { firstName, lastName, email, password, phone, pincode, address, state, city };
+
+      try {
+        const response = await fetch("http://localhost:3000/api/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if(response.ok){
+          window.location.href = "success.html";
+        } else {
+          alert(data.error || "Signup failed");
+        }
+
+      } catch(err){
+        console.error(err);
+        alert("Server error, try again later.");
+      }
+    });
+  </script>
+</body>
+</html>

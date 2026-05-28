@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAR FARMS - Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Star Farms Color Palette */
+            --primary: #00c6ff;
+            --secondary: #0072ff;
+            --accent: #10b981;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-solid: rgba(0, 0, 0, 0.6);
+            --text-main: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            /* Same Background as Home Page */
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)),
+                        url('https://images.unsplash.com/photo-1623387641168-d9803ddd3f35?q=80&w=2000') center/cover no-repeat fixed;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        /* --- LOGIN CONTAINER (MATCHES HERO CONTENT STYLE) --- */
+        #login-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-text { 
+            font-weight: 700; 
+            font-size: 1.5rem; 
+            letter-spacing: 2px; 
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        h1 { font-size: 1.6rem; margin-bottom: 20px; font-weight: 600; }
+        p.subtitle { color: #ddd; margin-bottom: 25px; font-size: 0.9rem; }
+
+        .input-group { text-align: left; margin-bottom: 20px; }
+        label { font-size: 0.85rem; font-weight: 400; margin-bottom: 8px; display: block; color: #aaa; }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: white;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 10px rgba(0, 198, 255, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover { 
+            transform: scale(1.03); 
+            box-shadow: 0 0 15px var(--primary); 
+        }
+
+        .error-toast {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        /* --- DASHBOARD STYLES (MODERN DARK THEME) --- */
+        #admin-dashboard {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            background: #0f172a;
+            grid-template-columns: 260px 1fr;
+        }
+
+        .sidebar {
+            background: #1e293b;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #94a3b8;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(0, 198, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .main-view { padding: 40px; overflow-y: auto; background: #0f172a; color: white; }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-card h3 { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-card p { margin: 10px 0 0; font-size: 1.8rem; font-weight: 700; color: white; }
+
+        .logout-link { margin-top: auto; color: #f87171; font-weight: 600; padding: 15px; cursor: pointer; text-align: center; border: 1px solid #f87171; border-radius: 30px; transition: 0.3s;}
+        .logout-link:hover { background: #f87171; color: white; }
+
+        .back-home {
+            margin-top: 20px;
+            display: inline-block;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        .back-home:hover { color: var(--primary); }
+
+    </style>
+</head>
+<body>
+
+    <div id="login-container">
+        <div class="logo-text">STAR FARMS</div>
+        <h1>Admin Portal</h1>
+        <p class="subtitle">Secure access for farm management</p>
+        
+        <div id="error-msg" class="error-toast">Access Denied: Incorrect Credentials</div>
+
+        <form id="login-form">
+            <div class="input-group">
+                <label>Admin ID</label>
+                <input type="text" id="email" placeholder="Enter Admin Email" required>
+            </div>
+            <div class="input-group">
+                <label>Security Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="login-btn">Secure Login</button>
+        </form>
+
+        <a href="index.html" class="back-home">← Back to Website</a>
+    </div>
+
+    <div id="admin-dashboard">
+      <aside class="sidebar">
+    <div class="logo">STAR FARMS</div>
+    <div class="nav-item active" onclick="showSection('dashboard', this)">Dashboard</div>
+    <div class="nav-item" onclick="showSection('inventory', this)">Inventory</div>
+    <div class="nav-item" onclick="showSection('orders', this)">Orders</div>
+    <div class="nav-item" onclick="showSection('customers', this)">Customers</div>
+    <div class="nav-item" onclick="showSection('settings', this)">Settings</div>
+    <<div class="logout-link" onclick="location.reload()">Log Out</div>
+</aside>
+        
+   
+<main class="main-view">
+    <section id="dashboard" class="admin-section">
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 style="font-weight: 600;">Farm Overview</h2>
+            <div style="background: #1e293b; padding: 10px 20px; border-radius: 30px; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.1);">
+                Logged in as: <span style="color: var(--primary);">admin@starfarms.com</span>
+            </div>
+        </header>
+        <div class="stats-row">
+            <div class="stat-card"><h3>Total Users</h3><p id="total-users">0</p></div>
+            <div class="stat-card"><h3>Total Orders</h3><p id="total-orders">0</p></div>
+            <div class="stat-card"><h3>Total Contacts</h3><p id="total-contacts">0</p></div>
+        </div>
+    </section>
+
+    <section id="inventory" class="admin-section" style="display:none;">
+    <h2 style="margin-bottom: 20px;">Inventory Management</h2>
+    <div class="stat-card" style="max-width: 600px; margin: 0 auto;">
+        <h3 style="margin-bottom: 20px; color: var(--primary);">Add New Product</h3>
+        
+        <form id="productForm">
+            <div style="margin-bottom: 15px; text-align: left;">
+                <label style="color: #94a3b8; font-size: 0.8rem; display: block; margin-bottom: 5px;">Product Name</label>
+                <input type="text" id="pName" placeholder="Enter product name" style="background: #0f172a; border: 1px solid #334155; padding: 12px; width: 100%; border-radius: 8px; color: white;" required>
+            </div>
+
+            <div style="margin-bottom: 15px; text-align: left;">
+                <label style="color: #94a3b8; font-size: 0.8rem; display: block; margin-bottom: 5px;">Product Description</label>
+                <textarea id="pDesc" rows="3" placeholder="Enter product description" style="background: #0f172a; border: 1px solid #334155; padding: 12px; width: 100%; border-radius: 8px; color: white; font-family: inherit; resize: none;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 15px; text-align: left;">
+                <label style="color: #94a3b8; font-size: 0.8rem; display: block; margin-bottom: 5px;">Price (₹)</label>
+                <input type="number" id="pPrice" placeholder="Enter price" style="background: #0f172a; border: 1px solid #334155; padding: 12px; width: 100%; border-radius: 8px; color: white;" required>
+            </div>
+
+            <div style="margin-bottom: 15px; text-align: left;">
+                <label style="color: #94a3b8; font-size: 0.8rem; display: block; margin-bottom: 5px;">Category</label>
+                <select id="pCategory" style="background: #0f172a; border: 1px solid #334155; padding: 12px; width: 100%; border-radius: 8px; color: white;">
+                    <option value="">-- Select Category --</option>
+                    <option value="dog">Dog</option>
+                     <option value="cat">Cat</option>
+                     <option value="bird">Bird</option>
+                        <option value="fish">Fish</option>
+                   
+            </div>
+
+            <div style="margin-bottom: 25px; text-align: left;">
+                <label style="color: #94a3b8; font-size: 0.8rem; display: block; margin-bottom: 5px;">Image Filename</label>
+                <input type="text" id="pImage" placeholder="example: dolo650.jpg" style="background: #0f172a; border: 1px solid #334155; padding: 12px; width: 100%; border-radius: 8px; color: white;">
+            </div>
+
+            <button type="submit" class="login-btn" style="padding: 14px; border-radius: 12px;">Add Product</button>
+        </form>
+    </div>
+</section>
+
+    <section id="orders" class="admin-section" style="display:none;">
+        <h2 style="margin-bottom: 20px;">Customer Orders</h2>
+        <div class="stat-card">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead style="color: var(--primary); border-bottom: 1px solid #334155;">
+                    <tr><th style="padding:12px;">ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th></tr>
+                </thead>
+                <tbody id="order-table-body"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="customers" class="admin-section" style="display:none;">
+        <h2 style="margin-bottom: 20px;">Registered Users</h2>
+        <div class="stat-card">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead style="color: var(--primary); border-bottom: 1px solid #334155;">
+                    <tr><th style="padding:12px;">ID</th><th>Name</th><th>Email</th><th>Status</th></tr>
+                </thead>
+                <tbody id="user-table-body"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+    <script>
+        const VALID_EMAIL = "admin@starfarms.com";
+        const VALID_PASS = "starfarms123";
+        
+        // --- 1. LOGIN LOGIC ---
+const loginForm = document.getElementById('login-form');
+const loginContainer = document.getElementById('login-container');
+const dashboard = document.getElementById('admin-dashboard');
+const errorMsg = document.getElementById('error-msg');
+
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const response = await fetch('http://localhost:3000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: email, password: password })
+        });
+        const data = await response.json();
+        
+        if (response.ok && data.role === 'admin') {
+            // REDIRECT TO admin.html instead of showing a div
+            window.location.href = "admin.html"; 
+        } else {
+            errorMsg.style.display = 'block';
+            errorMsg.textContent = "Invalid Admin Credentials";
+        }
+    } catch (err) { 
+        errorMsg.style.display = 'block';
+        errorMsg.textContent = "Server Connection Error";
+    }
+});
+
+// --- 2. NAVIGATION LOGIC (Fixes the 'Not Defined' Error) ---
+function showSection(id, element) {
+    // Hide all sections first
+    document.querySelectorAll('.admin-section').forEach(sec => sec.style.display = 'none');
+    
+    // Remove 'active' class from all nav items
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+    
+    // Show the section user clicked on
+    const target = document.getElementById(id);
+    if(target) {
+        target.style.display = 'block';
+        element.classList.add('active');
+    }
+
+    // Load data based on section
+    if (id === 'dashboard') loadDashboard();
+    if (id === 'orders') loadOrders();
+    if (id === 'customers') loadUsers();
+}
+
+// --- 3. DATA FETCHING ---
+async function loadDashboard() {
+    try {
+        const res = await fetch('http://localhost:3000/api/admin/overview-stats');
+        const data = await res.json();
+        document.getElementById('total-users').innerText = data.totalUsers || 0;
+        document.getElementById('total-orders').innerText = data.totalOrders || 0;
+        document.getElementById('total-contacts').innerText = data.totalContacts || 0;
+    } catch (err) { console.error("Dashboard failed to load"); }
+}
+
+async function loadOrders() {
+    try {
+        const res = await fetch('http://localhost:3000/api/admin/get-all-orders');
+        const orders = await res.json();
+        document.getElementById('order-table-body').innerHTML = orders.map(o => `
+            <tr style="border-bottom:1px solid #1e293b;">
+                <td style="padding:12px;">#${o.id}</td>
+                <td>${o.customer_name}</td>
+                <td>${o.main_product}</td>
+                <td>₹${o.total}</td>
+                <td><span style="color: var(--primary);">Paid</span></td>
+            </tr>
+        `).join('');
+    } catch (err) { console.error("Orders failed to load"); }
+}
+
+async function loadUsers() {
+    try {
+        const res = await fetch('http://localhost:3000/api/admin/get-all-users');
+        const users = await res.json();
+        document.getElementById('user-table-body').innerHTML = users.map(u => `
+            <tr style="border-bottom:1px solid #1e293b;">
+                <td style="padding:12px;">${u.id}</td>
+                <td>${u.firstName} ${u.lastName}</td>
+                <td>${u.email}</td>
+                <td><span style="color: var(--accent);">Active</span></td>
+            </tr>
+        `).join('');
+    } catch (err) { console.error("Users failed to load"); }
+}
+
+// --- 4. ADD PRODUCT LOGIC (Now includes Description and Image) ---
+document.getElementById('productForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const product = {
+        name: document.getElementById('pName').value,
+        description: document.getElementById('pDesc').value, // Added
+        price: document.getElementById('pPrice').value,
+        category: document.getElementById('pCategory').value,
+        image: document.getElementById('pImage').value // Added
+    };
+
+    try {
+        const res = await fetch('http://localhost:3000/api/admin/add-product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(product)
+        });
+        if (res.ok) { 
+            alert("Success! New product added to Star Farms."); 
+            e.target.reset(); 
+        }
+    } catch (err) { alert("Server error. Check if your backend is running."); }
+});
+    </script>
+</body>
+</html>   

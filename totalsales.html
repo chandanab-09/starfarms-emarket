@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>STAR FARMS - Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif;}
+body { background:#f0f0f0; color:#333; }
+.navbar { background:#0072ff; color:#fff; padding:15px 30px; display:flex; justify-content:space-between; align-items:center;}
+.navbar a { color:#fff; margin-left:20px; text-decoration:none; font-weight:600; }
+.container { padding:30px; }
+h1 { margin-bottom:20px; }
+button { padding:10px 20px; background:#00c6ff; border:none; border-radius:10px; color:#fff; cursor:pointer; transition:0.3s; }
+button:hover { background:#0072ff; }
+table { width:100%; border-collapse:collapse; margin-top:20px; }
+th, td { border:1px solid #ddd; padding:10px; text-align:left; }
+th { background:#0072ff; color:#fff; }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="logo">STAR FARMS - Admin</div>
+  <div>
+    <a href="admin.html">Dashboard</a>
+    <a href="#" id="logout">Logout</a>
+  </div>
+</div>
+
+<div class="container">
+  <h1>Dashboard</h1>
+
+  <!-- Total Sales Report Button -->
+  <button id="download-sales">Download Total Sales Report</button>
+
+  <!-- Orders Table -->
+  <h2>Orders</h2>
+  <table id="orders-table">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Customer</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Total</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Orders will be dynamically added here -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+// Download Sales Report
+document.getElementById('download-sales').addEventListener('click', function() {
+  fetch("http://localhost:3000/api/sales-report?key=MYSECRET123")
+    .then(res => res.blob())
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "total-sales-report.xlsx";
+      a.click();
+    })
+    .catch(err => console.error(err));
+});
+
+// Fetch Orders from backend
+fetch("http://localhost:3000/api/orders?key=MYSECRET123")
+  .then(res => res.json())
+  .then(data => {
+    console.log("DATA:", data); // 👈 check in console
+
+    const tbody = document.querySelector("#orders-table tbody");
+
+    // Clear previous rows
+    tbody.innerHTML = "";
+
+    data.forEach(order => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${order.id}</td>
+        <td>${order.customer_name}</td>
+        <td>${order.email}</td>
+        <td>${order.phone}</td>
+        <td>${order.total}</td>
+        <td>${order.created_at}</td>
+        <td>
+          <button onclick="downloadBill(${order.id})">Download Bill</button>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  })
+  .catch(err => console.error("Error:", err));
+ 
+
+// Function to download individual bill
+function downloadBill(orderId) {
+  fetch(`http://localhost:3000/api/download-bill/${orderId}?key=MYSECRET123`)
+    .then(res => res.blob())
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `bill-${orderId}.xlsx`;
+      a.click();
+    });
+}
+
+// Logout button
+document.getElementById('logout').addEventListener('click', function() {
+  alert("Logged out"); // You can add real authentication later
+});
+</script>
+
+</body>
+</html>
